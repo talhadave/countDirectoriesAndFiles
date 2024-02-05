@@ -1,0 +1,8 @@
+__pycache__
+test_task.py
+.cache
+countFiles-env
+.pytest_cache
+.gitignore.swp
+.Task1.py.swp
+:
