@@ -1,0 +1,33 @@
+name: Automation
+
+on:
+  push:
+    branches:
+     - main
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirement.txt
+
+      - name: Run tests
+        run:
+          python test_task1.py
+
+      - name: Docker Image
+        run: |
+          docker build -t coundirectoriesandfiles .
+
+  
