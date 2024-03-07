@@ -1,6 +1,7 @@
 name: Automation
 
 
+on: [push,pull_request]
 
 
 jobs:
