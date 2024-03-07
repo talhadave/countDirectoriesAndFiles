@@ -1,20 +1,13 @@
 name: Automation
 
 
-pull_request:
-  types: ['opened', 'edited', 'reopened', 'synchronize', 'ready_for_review']
-
-jobs:
- build:
-    if: github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
-
-on: [push]
+on: [push,pull_request]
 
 
 jobs:
   build:
     runs-on: ubuntu-latest
+     if: github.event.pull_request.draft == false
 
     steps:
       - name: checkout code
