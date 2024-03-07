@@ -1,13 +1,12 @@
 name: Automation
 
 
-on: [push]
-
+on: [push,pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-     if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false
 
     steps:
       - name: checkout code
