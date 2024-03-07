@@ -7,7 +7,6 @@ def countDirectoryAndFiles(path):
          files += len(filenames)
          directories += len(dirnames)
 
-     print("world")
 
      return (files,directories)
      
