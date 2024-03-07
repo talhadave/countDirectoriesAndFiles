@@ -1,7 +1,10 @@
 name: Automation
 
 
-on: [push,pull_request]
+on:
+ push:
+   - main
+ pull_request:
 
 jobs:
   build:
