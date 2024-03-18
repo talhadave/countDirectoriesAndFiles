@@ -1,6 +1,7 @@
 import os
 def countDirectoryAndFiles(path):
 
+    print("hello world")
     files =directories = 0
 
     for _, dirnames, filenames in os.walk(path):
