@@ -1,29 +1,31 @@
-name: PR Comment Trigger
+name: Automation
+
 on:
   issue_comment:
     types: [created]
+
 jobs:
-  comment_trigger:
+  build:
     runs-on: ubuntu-latest
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request && contains(github.event.comment.body, 'run')
+
     steps:
-    - name: Check if comment is on a pull request
-      uses: actions/github-script@v5
-      with:
-        script: |
-          const issue = context.payload.issue;
-          if (issue.pull_request) {
-            console.log(`Comment is on pull request #${issue.number}`);
-            return 'true';
-          } else {
-            console.log('Comment is not on a pull request');
-            return 'false';
-          }
-    - name: Check if comment includes specific trigger phrase
-      if: github.event.comment.body == 'Run all'
-      run: echo 'Running all actions'
-    - name: Check if comment includes specific action trigger
-      if: github.event.comment.body == 'Run action1'
-      run: echo 'Running action1'
-    - name: Check if comment includes specific action trigger
-      if: github.event.comment.body == 'Run action2'
-      run: echo 'Running action2'
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirement.txt
+
+      - name: Run tests
+        run:
+          python test_task1.py
+
+      - name: Docker Image
+        run: |
+          docker build -t coundirectoriesandfiles .
+
