@@ -1,16 +1,13 @@
 name: Automation
 
-
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  issue_comment:
+    types: [created]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request && contains(github.event.comment.body, 'run')
 
     steps:
       - name: checkout code
@@ -32,4 +29,3 @@ jobs:
         run: |
           docker build -t coundirectoriesandfiles .
 
-  
