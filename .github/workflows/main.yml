@@ -2,33 +2,36 @@ name: Automation
 
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  issue_comment:                                     
+    types: [created, edited, deleted]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
+    # if: github.event.pull_request.draft == false
 
     steps:
       - name: checkout code
+      if: contains(github.event.comment.body, '/checkout') 
         uses: actions/checkout@v2
       - name: Set up python
+      if: contains(github.event.comment.body, '/python') 
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
 
       - name: Install Dependencies
+      if: contains(github.event.comment.body, '/dependencies') 
         run: |
           pip install -r requirement.txt
 
       - name: Run tests
+      if: contains(github.event.comment.body, '/actions') 
         run:
           python test_task1.py
 
       - name: Docker Image
+      if: contains(github.event.comment.body, '/build docker image') 
         run: |
           docker build -t coundirectoriesandfiles .
 
