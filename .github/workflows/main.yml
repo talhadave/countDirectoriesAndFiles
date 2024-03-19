@@ -9,29 +9,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     # if: github.event.pull_request.draft == false
-    if: contains(github.event.comment.html_url, '/pull/')
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/build' }}
     steps:
       - name: checkout code
-      if: contains(github.event.comment.body, '/checkout') 
         uses: actions/checkout@v2
       - name: Set up python
-      if: contains(github.event.comment.body, '/python') 
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
 
       - name: Install Dependencies
-      if: contains(github.event.comment.body, '/dependencies') 
         run: |
           pip install -r requirement.txt
 
       - name: Run tests
-      if: contains(github.event.comment.body, '/actions') 
         run:
           python test_task1.py
 
       - name: Docker Image
-      if: contains(github.event.comment.body, '/build docker image') 
         run: |
           docker build -t coundirectoriesandfiles .
 
