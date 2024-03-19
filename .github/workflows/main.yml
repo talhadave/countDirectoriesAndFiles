@@ -4,7 +4,7 @@ name: Automation
 on: issue_comment
 
 jobs:
-  pr_commented:
+  issue_commented:
     name: PR comment
     runs-on: ubuntu-latest
     # if: github.event.pull_request.draft == false
