@@ -1,13 +1,17 @@
 name: Automation
 
 on:
+  push:
+    branches:
+      - main
   issue_comment:
     types: [created]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event_name == 'issue_comment' && github.event.issue.pull_request && contains(github.event.comment.body, 'run')
+    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, 'run')
+
     steps:
       - name: checkout code
         uses: actions/checkout@v2
