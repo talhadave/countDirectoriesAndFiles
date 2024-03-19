@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     # if: github.event.pull_request.draft == false
-
+    if: contains(github.event.comment.html_url, '/pull/')
     steps:
       - name: checkout code
       if: contains(github.event.comment.body, '/checkout') 
