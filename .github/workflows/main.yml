@@ -10,11 +10,22 @@ on:
     types: [created]
 
 jobs:
+  checkout-PR-branch:
+          steps:
+            - name: "Get PR's branch name"
+              id: get_branch
+              run: |
+                PR=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ github.event.issue.pull_request.url }})
+                echo "::set-output name=branch::$(echo $PR | jq -r '.head.ref')"
+
+           - name: "Checkout"
+             uses: actions/checkout@v2
+             with:
+              ref: ${{ steps.get_branch.outputs.branch }}
   build:
     runs-on: ubuntu-latest
 
     if: github.event_name == 'issue_comment' && github.event.issue.pull_request && contains(github.event.comment.body, 'test')
-
 
     steps:
       - name: "Checkout"
