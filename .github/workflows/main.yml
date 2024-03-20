@@ -1,7 +1,5 @@
 name: Automation
 
-
-
 on:
   push:
     branches:
@@ -10,29 +8,21 @@ on:
     types: [created]
 
 jobs:
-  checkout-PR-branch:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Get PR's branch name"
-        id: get_branch
-        run: |
-          PR=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ github.event.issue.pull_request.url }})
-          echo "::set-output name=branch::$(echo $PR | jq -r '.head.ref')"
-
-      - name: "Checkout"
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ steps.get_branch.outputs.branch }}
   build:
     runs-on: ubuntu-latest
-    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, 'test')
+    if: github.event.issue.pull_request && contains(github.event.comment.body, 'run')
 
 
     steps:
-      - name: checkout code
-        uses: actions/checkout@v2
+      - name: Get PR branch
+        uses: xt0rted/pull-request-comment-branch@v1
+        id: comment-branch
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.comment.pull_request.head.ref }}
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
+
       - name: Set up python
         uses: actions/setup-python@v2
         with:
