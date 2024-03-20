@@ -12,7 +12,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '@build') && github.ref != 'refs/heads/main'
+    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '@build')
+    uses: ./.github/workflows/main.yml
 
     steps:
       - name: checkout code
