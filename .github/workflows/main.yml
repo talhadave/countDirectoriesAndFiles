@@ -12,14 +12,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, 'test')
+    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, 'run')
 
 
     steps:
-      - name: checkout code
+      - name: "Get PR's branch name"
+        id: get_branch
+        run: |
+          PR=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ github.event.issue.pull_request.url }})
+          echo "::set-output name=branch::$(echo $PR | jq -r '.head.ref')"
+
+      - name: "Checkout"
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.comment.pull_request.head.ref }}
+          ref: ${{ steps.get_branch.outputs.branch }}
       - name: Set up python
         uses: actions/setup-python@v2
         with:
