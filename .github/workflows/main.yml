@@ -1,7 +1,25 @@
+name: Automation
+
+
+
+on:
+  push:
+    branches:
+      - main
+  issue_comment:
+    types: [created]
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, 'test')
+
+
     steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.comment.pull_request.head.ref }}
       - name: checkout code
         uses: actions/checkout@v2
       - name: Set up python
