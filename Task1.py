@@ -4,12 +4,12 @@ def countDirectoryAndFiles(path):
      print("hello")
      files =directories = 0
 
-     for _, dirnames, filenames in os.walk(path):
+    for _, dirnames, filenames in os.walk(path):
          files += len(filenames)
          directories += len(dirnames)
 
 
-     return (files,directories)
+    return (files,directories)
      
     
 
