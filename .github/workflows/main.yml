@@ -13,9 +13,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '@build')
-    uses: ./.github/workflows/main.yml
 
     steps:
+      - uses: ./.github/workflows/main.yml
       - name: checkout code
         uses: actions/checkout@v2
       - name: Set up python
