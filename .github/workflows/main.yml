@@ -1,21 +1,5 @@
-name: Automation
-
-
-
-on:
-  push:
-    branches:
-      - main
-  issue_comment:
-    types: [created]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '@build')
 
     steps:
-      - uses: ./.github/workflows/main.yml
       - name: checkout code
         uses: actions/checkout@v2
       - name: Set up python
