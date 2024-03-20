@@ -10,7 +10,6 @@ on:
     types: [created]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  test-purpose:
     if: github.event_name == 'issue_comment' && contains(github.event.comment.body, 'test')
     uses: ./.github/workflows/main.yml
