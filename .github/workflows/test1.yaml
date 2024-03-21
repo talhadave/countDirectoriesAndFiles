@@ -1,7 +1,6 @@
 name: Automation
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
@@ -11,6 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     if: github.event.issue.pull_request && contains(github.event.comment.body, '@hazenboot')
 
     steps:
@@ -29,3 +29,6 @@ jobs:
       - name: Docker Image
         run: |
           docker build -t coundirectoriesandfiles .
+
+
+    
