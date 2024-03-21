@@ -11,7 +11,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request && contains(github.event.comment.body, '@hazenbot test')
+    if: |
+     github.event.issue.pull_request && contains(github.event.comment.body, '@hazenbot test')
+     github.event.issue.pull_request && contains(github.event.comment.body, '@hazenbot main')
 
     steps:
       - name: checkout code
