@@ -1,6 +1,7 @@
 name: Automation
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -10,8 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request && contains(github.event.comment.body, 'actions')
 
+    if: github.event.issue.pull_request && contains(github.event.comment.body, 'run')
 
     steps:
       - name: Get PR branch
@@ -30,7 +31,7 @@ jobs:
         with:
           ref: ${{ steps.comment-branch.outputs.head_ref }}
 
-      - name: Set up python
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
@@ -40,27 +41,27 @@ jobs:
           pip install -r requirement.txt
 
       - name: Run tests
-        run:
-          python test_task1.py
+        run: python test_task1.py
 
       - name: Docker Image
         run: |
           docker build -t coundirectoriesandfiles .
 
-      - name: Set latest commit status as ${{ job.status }}
+
+      - name: Set latest commit status
         uses: myrotvorets/set-commit-status-action@master
         if: always()
         with:
           sha: ${{ steps.comment-branch.outputs.head_sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status }}
-          
+
       - name: Add comment to PR
         uses: actions/github-script@v6
         if: always()
         with:
           script: |
-            const name = '${{ github.workflow   }}';
+            const name = '${{ github.workflow }}';
             const url = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
             const success = '${{ job.status }}' === 'success';
             const body = `${name}: ${success ? 'succeeded ✅' : 'failed ❌'}\n${url}`;
