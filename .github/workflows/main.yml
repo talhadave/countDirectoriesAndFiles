@@ -4,8 +4,11 @@ on:
   push:
     branches:
       - main
+  issue_comment:
+    types: [created,edited]
   pull_request:
     types: [closed]
+
 
 jobs:
   build:
