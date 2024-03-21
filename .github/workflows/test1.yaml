@@ -6,9 +6,6 @@ on:
       - main
   issue_comment:
     types: [created,edited]
-  pull_request:
-    types: [closed]
-
 
 jobs:
   build:
@@ -27,13 +24,7 @@ jobs:
       (
         github.event_name == 'push' &&
         github.ref == 'refs/heads/main'
-      ) ||
-      (
-        github.event_name == 'pull_request' &&
-        github.event.action == 'closed' &&
-        github.event.pull_request.merged == true
-      )
-
+      ) 
     steps:
       - name: checkout code
         uses: actions/checkout@v2
