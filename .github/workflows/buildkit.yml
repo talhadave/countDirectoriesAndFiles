@@ -11,5 +11,5 @@ jobs:
         run: |
           curl -X POST "https://api.buildkite.com/v2/organizations/hazenai/pipelines/buildkite-github-action-test/builds" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer YOUR_BUILDKITE_API_TOKEN" \
+            -H "Authorization: Bearer BUILDKITE_API_TOKEN" \
             -d '{"commit":"'"${{ github.sha }}"'", "branch":"'"${{ github.ref }}"'"}'
