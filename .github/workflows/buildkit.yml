@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-
 jobs:
   trigger_buildkite:
     runs-on: ubuntu-latest
