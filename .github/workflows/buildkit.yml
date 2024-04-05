@@ -1,15 +1,18 @@
 name: Trigger Buildkite Build
 on:
   pull_request:
+    types: [opened, synchronize]  s
+
 jobs:
   trigger_buildkite:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Buildkite Build
         env:
-          BUILDKITE_API_TOKEN: ${{ secrets.BUILDKITE }}
+          BUILDKITE_API_TOKEN: ${{ secrets.bkua_cddacd54a5426d0104266813f7ec3c037a3ade64 }}
         run: |
-          curl -X POST "https://api.buildkite.com/v2/organizations/hazenai/pipelines/buildkite-github-action-test/builds" \
+          curl -X POST "https://api.buildkite.com/v2/organizations/hazenai/pipelines/buildkite-github-action-test//builds" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer bkua_cddacd54a5426d0104266813f7ec3c037a3ade64" \
-            -d '{"commit":"'"${{ github.sha }}"'", "branch":"'"${{ github.ref }}"'"}'
+            -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
+            -d '{"commit":"'"${{ github.event.pull_request.head.sha }}"'", "branch":"'"${{ github.event.pull_request.head.ref }}"'"}'
+
