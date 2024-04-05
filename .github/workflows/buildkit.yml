@@ -14,5 +14,5 @@ jobs:
         run: |
           curl -X POST "https://api.buildkite.com/v2/organizations/hazenai/pipelines/buildkite-github-action-test/builds" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
-            -d '{"commit":"'"${{ github.event.pull_request.head.sha }}","branch":"${{ github.event.pull_request.head.ref }}"}'
+            -H "Authorization: Bearer bkua_cddacd54a5426d0104266813f7ec3c037a3ade64" \
+            -d '{"commit":"'"${{ github.event.pull_request.head.sha }}"'", "branch":"'"${{ github.event.pull_request.head.ref }}"'"}'
