@@ -1,7 +1,7 @@
 name: Trigger Buildkite Build
 on:
   pull_request:
-    types: [opened, synchronize]  s
+    types: [opened, synchronize]
 
 jobs:
   trigger_buildkite:
