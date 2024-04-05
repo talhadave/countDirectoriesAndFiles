@@ -11,7 +11,7 @@ jobs:
       - name: Extract PR information
         id: pr_info
         run: |
-          SHA=$(echo "${{ github.event.comment.body }}" | grep -oP '(?<=/buildkite\s).*')
+          SHA=$(echo "/buildkite" | grep -oP '/buildkite\s\K.*')
           BRANCH=$(echo "${{ github.event.issue.pull_request.head.ref }}" | tr -d '"')
           echo "::set-env name=SHA::${SHA}"
           echo "::set-env name=BRANCH::${BRANCH}"
