@@ -7,4 +7,3 @@ DevOps ENgineer
 
 how are you
 all good
-what about you
