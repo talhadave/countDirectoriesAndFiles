@@ -21,8 +21,17 @@ jobs:
           echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
       - name: Debug
         run: |
-           echo "SHA: $SHA"
-           echo "BRANCH: $BRANCH"
+           echo "Comment body: ${github.event.comment.body}"
+           COMMENT_BODY=$(echo "${{ github.event.comment.body }}")
+           echo "Extracted comment body: $COMMENT_BODY"
+           SHA=$(echo "$COMMENT_BODY" | grep -oP '/buildkite\s\K.*' | awk '{print $1}')
+           echo "Extracted SHA: $SHA"
+           BRANCH=$(echo "$COMMENT_BODY" | grep -oP '/buildkite\s\K.*' | awk '{print $2}')
+           echo "Extracted branch: $BRANCH"
+           echo "Setting environment variables..."
+           echo "SHA=${SHA}" >> $GITHUB_ENV
+           echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
+           echo "Environment variables set."
       - name: Trigger Buildkite Build
         env:
           BUILDKITE_API_TOKEN: ${{ secrets.bkua_cddacd54a5426d0104266813f7ec3c037a3ade64 }}
