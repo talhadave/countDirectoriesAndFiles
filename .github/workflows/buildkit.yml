@@ -9,16 +9,18 @@ jobs:
     if: startsWith(github.event.comment.body, '/buildkite')
     runs-on: ubuntu-latest
     env:
-      BUILDKITE_API_TOKEN: ${{ secrets.BUILDKITE_API_TOKEN }}
+      BUILDKITE_API_TOKEN: ${{ secrets.bkua_cddacd54a5426d0104266813f7ec3c037a3ade64 }}
     steps:
       - name: Extract PR information
         id: pr_info
         run: |
           COMMENT_BODY="${{ github.event.comment.body }}"
-          SHA=$(echo "$COMMENT_BODY" | grep -oP '/buildkite\s\K.*' | awk '{print $1}')
-          BRANCH=$(echo "$COMMENT_BODY" | grep -oP '/buildkite\s\K.*' | awk '{print $2}')
+          IFS=' ' read -ra PARTS <<< "$COMMENT_BODY"
+          SHA=${PARTS[1]}
+          BRANCH=${PARTS[2]}
           echo "SHA=${SHA}" >> $GITHUB_ENV
           echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
+
       - name: Debug
         run: |
            echo "Comment body: ${{ github.event.comment.body }}"
