@@ -11,8 +11,9 @@ jobs:
       - name: Extract PR information
         id: pr_info
         run: |
-          SHA=$(echo "/buildkite" | grep -oP '/buildkite\s\K.*')
-          BRANCH=$(echo "${{ github.event.issue.pull_request.head.ref }}" | tr -d '"')
+          COMMENT_BODY=$(echo "${{ github.event.comment.body }}")
+          SHA=$(echo "$COMMENT_BODY" | grep -oP '/buildkite\s\K.*' | awk '{print $1}')
+          BRANCH=$(echo "$COMMENT_BODY" | grep -oP '/buildkite\s\K.*' | awk '{print $2}')
           echo "::set-env name=SHA::${SHA}"
           echo "::set-env name=BRANCH::${BRANCH}"
       - name: Trigger Buildkite Build
@@ -24,4 +25,4 @@ jobs:
           curl -X POST "https://api.buildkite.com/v2/organizations/hazenai/pipelines/buildkite-github-action-test/builds" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
-            -d "{\"commit\":\"$SHA\", \"branch\":\"$BRANCH\"}"
+            -d "{\"commit\":\"${SHA}\", \"branch\":\"${BRANCH}\"}"
