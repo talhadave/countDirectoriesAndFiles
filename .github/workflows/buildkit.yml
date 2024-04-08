@@ -1,4 +1,5 @@
 name: Trigger Buildkite Build
+
 on:
   issue_comment:
     types: [created, edited]
@@ -8,35 +9,26 @@ jobs:
     if: startsWith(github.event.comment.body, '/buildkite')
     runs-on: ubuntu-latest
     env:
-      SHA: ""
-      BRANCH: ""
+      BUILDKITE_API_TOKEN: ${{ secrets.BUILDKITE_API_TOKEN }}
     steps:
       - name: Extract PR information
         id: pr_info
         run: |
-          COMMENT_BODY=$(echo "${{ github.event.comment.body }}")
+          COMMENT_BODY="${{ github.event.comment.body }}"
           SHA=$(echo "$COMMENT_BODY" | grep -oP '/buildkite\s\K.*' | awk '{print $1}')
           BRANCH=$(echo "$COMMENT_BODY" | grep -oP '/buildkite\s\K.*' | awk '{print $2}')
           echo "SHA=${SHA}" >> $GITHUB_ENV
           echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
       - name: Debug
         run: |
-           echo "Comment body: ${github.event.comment.body}"
-           COMMENT_BODY=$(echo "${{ github.event.comment.body }}")
-           echo "Extracted comment body: $COMMENT_BODY"
-           SHA=$(echo "$COMMENT_BODY" | grep -oP '/buildkite\s\K.*' | awk '{print $1}')
-           echo "Extracted SHA: $SHA"
-           BRANCH=$(echo "$COMMENT_BODY" | grep -oP '/buildkite\s\K.*' | awk '{print $2}')
-           echo "Extracted branch: $BRANCH"
+           echo "Comment body: ${{ github.event.comment.body }}"
+           echo "Extracted SHA: ${{ env.SHA }}"
+           echo "Extracted branch: ${{ env.BRANCH }}"
            echo "Setting environment variables..."
-           echo "SHA=${SHA}" >> $GITHUB_ENV
-           echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
            echo "Environment variables set."
       - name: Trigger Buildkite Build
-        env:
-          BUILDKITE_API_TOKEN: ${{ secrets.bkua_cddacd54a5426d0104266813f7ec3c037a3ade64 }}
         run: |
           curl -X POST "https://api.buildkite.com/v2/organizations/hazenai/pipelines/buildkite-github-action-test/builds" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer bkua_cddacd54a5426d0104266813f7ec3c037a3ade64" \
+            -H "Authorization: Bearer $BUILDKITE_API_TOKEN" \
             -d "{\"commit\":\"${{ env.SHA }}\", \"branch\":\"${{ env.BRANCH }}\"}"
