@@ -33,7 +33,6 @@ jobs:
       #- name: checkout code
        # uses: actions/checkout@v2
       - name: Declare some variables
-        if: ${{ github.event_name == 'pull_request' }} 
         shell: bash
         run: |
            echo "sha_short=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_ENV"
