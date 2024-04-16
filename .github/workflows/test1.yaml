@@ -32,7 +32,12 @@ jobs:
           ref: refs/pull/${{ github.event.issue.number }}/head
       #- name: checkout code
        # uses: actions/checkout@v2
-        
+      - name: show the branch and commit 
+        run: |
+          echo " GITHUB_BRANCH=${GITHUB_REF#refs/heads/}" >> ${GITHUB_BRANCH
+          echo " GITHUB_COMMIT=$(git rev-parse --short "$GITHUB_SHA")" >> ${GITHUB_COMMIT}
+          echo "$GITHUB_BRANCH"
+          echo "GITHUB_COMMIT"
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
