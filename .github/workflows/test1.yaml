@@ -26,24 +26,12 @@ jobs:
         github.ref == 'refs/heads/main'
       ) 
     steps:
-      - name: Get PR SHA
-        id: sha
-        uses: actions/github-script@v4
+      - name: Checkout pull request 🏁
+        uses: actions/checkout@v3
         with:
-          result-encoding: string
-          script: |
-            const { owner, repo, number } = context.issue;
-            const pr = await github.pulls.get({
-              owner,
-              repo,
-              pull_number: number,
-            });
-            return pr.data.head.sha          
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ steps.sha.outputs.result }}
-      - name: checkout code
-        uses: actions/checkout@v2
+          ref: refs/pull/${{ github.event.issue.number }}/head
+      #- name: checkout code
+       # uses: actions/checkout@v2
         
       - name: Set up Python
         uses: actions/setup-python@v2
