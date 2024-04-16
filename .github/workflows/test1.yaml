@@ -43,7 +43,7 @@ jobs:
           # Fetch latest commit
           latest_commit=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}/commits" | \
-            jq '.[0].sha')
+            jq '.[-1].sha')
           echo "::set-output name=latest_commit::$latest_commit"
       - name: Log latest commit SHA and  branch name
         run: |
