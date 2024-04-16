@@ -26,6 +26,8 @@ jobs:
         github.ref == 'refs/heads/main'
       ) 
     steps:
+      - name: debug
+           echo "hello"
       - name: Checkout pull request 🏁
         if: >
           (
