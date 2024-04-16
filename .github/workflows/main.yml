@@ -64,6 +64,7 @@ jobs:
            echo "Branch Name: ${{ steps.pr.outputs.pr_branch }}"
            echo "Latest Commit: ${{ steps.pr.outputs.latest_commit }}"
       - name: checkout code
+        if: github.ref == 'refs/heads/main'
         uses: actions/checkout@v2
         
       - name: Set up Python
