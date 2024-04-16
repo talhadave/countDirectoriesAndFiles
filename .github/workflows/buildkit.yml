@@ -5,7 +5,12 @@ on:
 
 jobs:
   trigger_buildkite:
-    if: startsWith(github.event.comment.body, '/buildkite')
+    if: >
+      (
+        github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request &&
+        contains(github.event.comment.body, '@buildkite run')
+      )
     runs-on: ubuntu-latest
     steps:
       - name: Get PR info
