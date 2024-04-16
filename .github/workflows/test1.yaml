@@ -27,6 +27,11 @@ jobs:
       ) 
     steps:
       - name: Checkout pull request 🏁
+        if: >
+          (
+           github.event_name == 'issue_comment' &&
+           github.event.issue.pull_request 
+          )
         uses: actions/checkout@v3
         with:
           ref: refs/pull/${{ github.event.issue.number }}/head
