@@ -7,18 +7,31 @@ jobs:
   trigger_buildkite:
     if: startsWith(github.event.comment.body, '/buildkite')
     runs-on: ubuntu-latest
-    env:
-      SHA: ""
-      BRANCH: ""
     steps:
-      - name: Extract PR information
-        id: pr_info
+      - name: Get PR info
+        if: >
+          (
+           github.event_name == 'issue_comment' &&
+           github.event.issue.pull_request 
+          )
+        id: pr
         run: |
-          COMMENT_BODY=$(echo "${{ github.event.comment.body }}")
-          SHA=$(echo "$COMMENT_BODY" | grep -oP '/buildkite\s\K.*' | awk '{print $1}')
-          BRANCH=$(echo "$COMMENT_BODY" | grep -oP '/buildkite\s\K.*' | awk '{print $2}')
-          echo "SHA=${SHA}" >> $GITHUB_ENV
-          echo "BRANCH=${BRANCH}" >> $GITHUB_ENV
+          pr_number=$(jq --raw-output '.issue.number' "$GITHUB_EVENT_PATH")
+          pr_branch=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" | \
+            jq --raw-output '.head.ref')
+          echo "::set-output name=pr_number::$pr_number"
+          echo "::set-output name=pr_branch::$pr_branch"
+
+          latest_commit=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}/commits" | \
+            jq '.[-1].sha')
+          echo "::set-output name=latest_commit::$latest_commit"
+      - name: Log latest commit SHA and  branch name
+        run: |
+           echo "Branch Name: ${{ steps.pr.outputs.pr_branch }}"
+           echo "Latest Commit: ${{ steps.pr.outputs.latest_commit }}"
+
       - name: Trigger Buildkite Build
         env:
           BUILDKITE_API_TOKEN: ${{ secrets.bkua_cddacd54a5426d0104266813f7ec3c037a3ade64 }}
@@ -26,4 +39,4 @@ jobs:
           curl -X POST "https://api.buildkite.com/v2/organizations/hazenai/pipelines/buildkite-github-action-test/builds" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer bkua_cddacd54a5426d0104266813f7ec3c037a3ade64" \
-            -d "{\"commit\":\"${{ env.SHA }}\", \"branch\":\"${{ env.BRANCH }}\"}"
+            -d "{\"commit\":\"${{ steps.pr.outputs.latest_commit }}\", \"branch\":\"${{ steps.pr.outputs.pr_branch }}\"}"
