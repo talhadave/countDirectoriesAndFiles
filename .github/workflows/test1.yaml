@@ -36,7 +36,9 @@ jobs:
         id: pr
         run: |
           pr_number=$(jq --raw-output '.issue.number' "$GITHUB_EVENT_PATH")
-          pr_branch=$(jq --raw-output '.issue.pull_request.head.ref' "$GITHUB_EVENT_PATH")
+          pr_branch=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" | \
+            jq --raw-output '.head.ref')
           echo "::set-output name=pr_number::$pr_number"
           echo "::set-output name=pr_branch::$pr_branch"
 
