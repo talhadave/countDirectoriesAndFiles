@@ -30,13 +30,6 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v2
-      - name: Github API Request
-        id: request
-        uses: octokit/request-action@v2.0.0
-        with:
-          route: ${{ github.event.issue.pull_request.url }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout pull request 🏁
         if: >
