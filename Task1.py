@@ -10,7 +10,8 @@ def countDirectoryAndFiles(path):
 
 
     return (files,directories)
-     
+    
+    print("adding another debugging statement")
     
 
 path=os.getcwd()
