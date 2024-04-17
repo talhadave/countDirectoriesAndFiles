@@ -40,7 +40,23 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: refs/pull/${{ github.event.issue.number }}/head
-      
+    
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirement.txt
+
+      - name: Run tests
+        run: python test_task1.py
+
+      - name: Docker Image
+        run: |
+          docker build -t coundirectoriesandfiles .
       - name: Get PR details
         uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
@@ -64,19 +80,3 @@ jobs:
           sha: ${{ steps.comment-branch.outputs.head_sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
           status: ${{ job.status }}
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
-
-      - name: Install Dependencies
-        run: |
-          pip install -r requirement.txt
-
-      - name: Run tests
-        run: python test_task1.py
-
-      - name: Docker Image
-        run: |
-          docker build -t coundirectoriesandfiles .
