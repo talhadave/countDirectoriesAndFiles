@@ -1,4 +1,4 @@
-name: Automation1
+name: Automation
 
 on:
   push:
@@ -83,7 +83,12 @@ jobs:
 
       - name: Set final commit status
         uses: myrotvorets/set-commit-status-action@master
-        if: always()
+        if: >
+          (
+           github.event_name == 'issue_comment' &&
+           github.event.issue.pull_request 
+          ) ||
+          always()
         with:
           sha: ${{ steps.comment-branch.outputs.head_sha }}
           token: ${{ secrets.GITHUB_TOKEN }}
