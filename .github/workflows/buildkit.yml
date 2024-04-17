@@ -16,22 +16,6 @@ jobs:
       - name: Get PR details
         uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
-      - name: Set commit status as pending
-        uses: myrotvorets/set-commit-status-action@master
-        with:
-          sha: ${{ steps.comment-branch.outputs.head_sha }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: pending
-
-      - uses: actions/checkout@v3
-        with:
-          ref: ${{ steps.comment-branch.outputs.head_ref }}
-      - name: Print stuff
-        run: echo "Hello dudes!"
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
 
       - name: Trigger Buildkite Build
         env:
@@ -41,11 +25,4 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer bkua_cddacd54a5426d0104266813f7ec3c037a3ade64" \
             -d "{\"commit\":\"${{ steps.comment-branch.outputs.head_sha  }}\", \"branch\":\"${{ steps.comment-branch.outputs.head_ref }}\"}"
-     
-      - name: Set final commit status
-        uses: myrotvorets/set-commit-status-action@master
-        if: always()
-        with:
-          sha: ${{ steps.comment-branch.outputs.head_sha }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: ${{ job.status }}
+  
