@@ -13,29 +13,25 @@ jobs:
       )
     runs-on: ubuntu-latest
     steps:
-      - name: Get PR info
-        if: >
-          (
-           github.event_name == 'issue_comment' &&
-           github.event.issue.pull_request 
-          )
-        id: pr
-        run: |
-          pr_number=$(jq --raw-output '.issue.number' "$GITHUB_EVENT_PATH")
-          pr_branch=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}" | \
-            jq --raw-output '.head.ref')
-          echo "::set-output name=pr_number::$pr_number"
-          echo "::set-output name=pr_branch::$pr_branch"
+      - name: Get PR details
+        uses: xt0rted/pull-request-comment-branch@v1
+        id: comment-branch
+      - name: Set commit status as pending
+        uses: myrotvorets/set-commit-status-action@master
+        with:
+          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: pending
 
-          latest_commit=$(curl -sSL -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${pr_number}/commits" | \
-            jq '.[-1].sha')
-          echo "::set-output name=latest_commit::$latest_commit"
-      - name: Log latest commit SHA and  branch name
-        run: |
-           echo "Branch Name: ${{ steps.pr.outputs.pr_branch }}"
-           echo "Latest Commit: ${{ steps.pr.outputs.latest_commit }}"
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ steps.comment-branch.outputs.head_ref }}
+      - name: Print stuff
+        run: echo "Hello dudes!"
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
 
       - name: Trigger Buildkite Build
         env:
@@ -44,4 +40,12 @@ jobs:
           curl -X POST "https://api.buildkite.com/v2/organizations/hazenai/pipelines/buildkite-github-action-test/builds" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer bkua_cddacd54a5426d0104266813f7ec3c037a3ade64" \
-            -d "{\"commit\":\"${{ steps.pr.outputs.latest_commit }}\", \"branch\":\"${{ steps.pr.outputs.pr_branch }}\"}"
+            -d "{\"commit\":\"${{ steps.comment-branch.outputs.head_sha  }}\", \"branch\":\"${{ steps.comment-branch.outputs.head_ref }}\"}"
+     
+      - name: Set final commit status
+        uses: myrotvorets/set-commit-status-action@master
+        if: always()
+        with:
+          sha: ${{ steps.comment-branch.outputs.head_sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
