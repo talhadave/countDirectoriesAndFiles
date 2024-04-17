@@ -66,10 +66,15 @@ jobs:
         run: |
            echo "Branch Name: ${{ steps.pr.outputs.pr_branch }}"
            echo "Latest Commit: ${{ steps.pr.outputs.latest_commit }}"
-      - name: create the status # create the status on the lastest commit sha from pull request
-        run: |
-          curl -X POST -u "weide:${{ secrets.PAT0309 }}" -H "Content-Type: application/json" "https://api.github.com/repos/${{ github.repository }}/statuses/$latest_commit" --data '{ "state": "failure", "target_url": "https://example.com/build/status", "description": "The build failed!", "context": "continuous-integration/statuscreation7"}'
-        
+           
+      - name: Set final commit status
+        uses: myrotvorets/set-commit-status-action@master
+        if: always()
+        with:
+          sha: ${{ steps.pr.outputs.latest_commit }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: ${{ job.status }}
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
