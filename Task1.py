@@ -9,7 +9,6 @@ def countDirectoryAndFiles(path):
 
 
     return (files,directories)
-    print("add another debug statement") 
     
 
 path=os.getcwd()
