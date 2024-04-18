@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
   issue_comment:
     types: [created,edited]
 
@@ -50,17 +49,7 @@ jobs:
           )
         uses: xt0rted/pull-request-comment-branch@v1
         id: comment-branch
-      - name: Set commit status as skipped
-        if: >
-          (
-           github.event_name != 'issue_comment' &&
-           github.event.issue.pull_request 
-          )
-        uses: myrotvorets/set-commit-status-action@master
-        with:
-          sha: ${{ steps.comment-branch.outputs.head_sha }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          status: skipped
+     
       - name: Set commit status as pending
         if: >
           (
