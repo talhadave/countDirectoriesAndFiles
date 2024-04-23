@@ -1,0 +1,4 @@
+steps:
+  - label: "Build, test and push Docker image for x86_64"
+    commands:
+      - echo "Hello World"
